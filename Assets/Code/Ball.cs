@@ -7,21 +7,17 @@ namespace GA.GArkanoid
     public class Ball : MonoBehaviour
     {
         [SerializeField] private float _speed = 5;
-        private Rigidbody2D _rigidbody;
         private Inputs _inputs;
+        private Transform _transform;
+        private Vector2 _velocity = Vector2.zero;
 
         // Start is called before the first frame update
         // Use this for initialization
         void Start()
         {
-            // Works if the component is attached to the same GameObject this 
-            // script is attached to.
-            _rigidbody = GetComponent<Rigidbody2D>();
-
             _inputs = new Inputs();
-
             _inputs.Game.Enable();
-
+            _transform = transform;
         }
 
         // Update is called once per frame
@@ -30,8 +26,26 @@ namespace GA.GArkanoid
         {
             if (_inputs.Game.Launch.WasPerformedThisFrame())
             {
-                _rigidbody.AddForce((Vector2.up + Vector2.right).normalized * _speed, ForceMode2D.Impulse);
+                _velocity = (Random.insideUnitCircle + Vector2.up * 1.5f).normalized;
             }
+
+            _transform.position += new Vector3(_velocity.x, _velocity.y, 0) * _speed * Time.deltaTime;
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            Wall wall = other.GetComponent<Wall>();
+            if (wall == null)
+            {   
+                // Did not collide with wall, exit.
+                return;
+            }
+
+            Vector2 normal = wall.Normal;
+
+            Vector2 u = Vector2.Dot(_velocity, normal) * normal;
+            Vector2 w = _velocity - u;
+            _velocity = w - u;
         }
     }
 }
