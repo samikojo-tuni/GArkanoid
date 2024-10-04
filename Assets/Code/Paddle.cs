@@ -9,7 +9,6 @@ namespace GA.GArkanoid
 
     private IMover _mover;
     private Inputs _inputs;
-    private Ball _ball;
 
     #region Unity messages
     private void Awake()
@@ -22,7 +21,7 @@ namespace GA.GArkanoid
     {
       _inputs.Game.Enable();
 
-      _ball = CreateBall();
+      GameManager.CurrentBall = CreateBall();
     }
 
     private void OnDisable()
@@ -44,7 +43,7 @@ namespace GA.GArkanoid
     private Ball CreateBall()
     {
       // Quaternion.identity is zero rotation
-      Ball ball = Instantiate(_ballPrefab, _startPoint.position, Quaternion.identity);
+      Ball ball = Instantiate(_ballPrefab, _startPoint.position, Quaternion.identity, _startPoint);
       return ball;
     }
 

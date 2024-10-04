@@ -18,6 +18,10 @@ namespace GA.GArkanoid
 		public static int Score { get; set; }
 		public static int Lives { get; set; }
 		public static int CurrentLevel { get; private set; }
+
+		// TODO: This should be done properly!
+		// Implement LevelManager!
+		public static Ball CurrentBall { get; set; }
 		// TODO: Add Game state!
 	}
 }

@@ -26,10 +26,16 @@ namespace GA.GArkanoid
         {
             if (_inputs.Game.Launch.WasPerformedThisFrame())
             {
-                _velocity = (Random.insideUnitCircle + Vector2.up * 1.5f).normalized;
+                Launch();
             }
 
             _transform.position += new Vector3(_velocity.x, _velocity.y, 0) * _speed * Time.deltaTime;
+        }
+
+        private void Launch()
+        {
+            transform.parent = null;
+            _velocity = (Random.insideUnitCircle + Vector2.up * 1.5f).normalized;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -50,7 +56,11 @@ namespace GA.GArkanoid
             }
 
             Vector2 normal = wall.Normal;
+            Bounce(normal);
+        }
 
+        public void Bounce(Vector2 normal)
+        {
             Vector2 u = Vector2.Dot(_velocity, normal) * normal;
             Vector2 w = _velocity - u;
             _velocity = w - u;
