@@ -36,8 +36,16 @@ namespace GA.GArkanoid
         {
             Wall wall = other.GetComponent<Wall>();
             if (wall == null)
-            {   
+            {
                 // Did not collide with wall, exit.
+                return;
+            }
+
+            // Was the wall hazard? If so, destroy the ball!
+            if (wall.IsHazard)
+            {
+                Destroy(gameObject);
+                GameManager.Lives--;
                 return;
             }
 
