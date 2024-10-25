@@ -1,10 +1,10 @@
+using System;
 using UnityEngine;
 
 namespace GA.GArkanoid
 {
-	public class Paddle : MonoBehaviour
+	public class Paddle : LevelObject
 	{
-		[SerializeField] private Ball _ballPrefab;
 		[SerializeField] private Transform _startPoint;
 
 		private IMover _mover;
@@ -20,8 +20,6 @@ namespace GA.GArkanoid
 		private void OnEnable()
 		{
 			_inputs.Game.Enable();
-
-			GameManager.CurrentBall = CreateBall();
 		}
 
 		private void OnDisable()
@@ -38,15 +36,17 @@ namespace GA.GArkanoid
 
 		#endregion
 
-		#region Internal functionality
-
-		private Ball CreateBall()
+		public void ResetBall()
 		{
-			// Quaternion.identity is zero rotation
-			Ball ball = Instantiate(_ballPrefab, _startPoint.position, Quaternion.identity, _startPoint);
-			return ball;
+			LevelManager.CurrentBall.transform.parent = _startPoint;
+			LevelManager.CurrentBall.transform.localPosition = Vector3.zero;
 		}
 
-		#endregion
+		public override void Setup(LevelManager levelManager)
+		{
+			base.Setup(levelManager);
+
+			ResetBall();
+		}
 	}
 }

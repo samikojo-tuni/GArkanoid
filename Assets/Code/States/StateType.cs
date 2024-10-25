@@ -6,5 +6,7 @@ namespace GA.GArkanoid.State
 		MainMenu,
 		Level,
 		GameOver,
+		Options,
+		Pause
 	}
 }

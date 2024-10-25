@@ -10,6 +10,7 @@ namespace GA.GArkanoid.State
 		{
 			// TODO: Maybe some more targets?
 			AddTargetState(StateType.Level);
+			AddTargetState(StateType.Options);
 		}
 	}
 }

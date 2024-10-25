@@ -26,6 +26,8 @@ namespace GA.GArkanoid
 		{
 			_states.Add(new MainMenuState());
 			_states.Add(new LevelState());
+			_states.Add(new OptionsState());
+			_states.Add(new PauseState());
 
 			GameStateBase initialState = _states[0];
 
@@ -53,12 +55,8 @@ namespace GA.GArkanoid
 		public static int Lives { get; set; }
 		public static int CurrentLevel { get; private set; }
 
-		// TODO: This should be done properly!
-		// Implement LevelManager!
-		public static Ball CurrentBall { get; set; }
-
 		public static GameStateBase CurrentState { get; private set; }
-		// TODO: Consider adding PreviousState as well!
+		public static GameStateBase PreviousState { get; private set; }
 
 		private static GameStateBase GetState(StateType stateType)
 		{
@@ -95,6 +93,9 @@ namespace GA.GArkanoid
 
 			// Deactivate previous state, update current state and activate the new state.
 			// TODO: Implement proper transitions!
+
+			PreviousState = CurrentState;
+
 			CurrentState.OnExit();
 			CurrentState = targetState;
 			CurrentState.OnEnter(forceLoad);

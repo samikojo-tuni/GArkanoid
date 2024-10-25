@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GA.GArkanoid
 {
-	public class Wall : MonoBehaviour
+	public class Wall : LevelObject
 	{
 		[SerializeField] private Vector2 _normal;
 		[SerializeField] private bool _isHazard = false;

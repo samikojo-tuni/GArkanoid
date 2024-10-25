@@ -4,20 +4,27 @@ using UnityEngine;
 
 namespace GA.GArkanoid
 {
-	public class Ball : MonoBehaviour
+	public class Ball : LevelObject
 	{
 		[SerializeField] private float _speed = 5;
 		private Inputs _inputs;
 		private Transform _transform;
 		private Vector2 _velocity = Vector2.zero;
 
-		// Start is called before the first frame update
-		// Use this for initialization
-		void Start()
+		private void Awake()
 		{
 			_inputs = new Inputs();
-			_inputs.Game.Enable();
 			_transform = transform;
+		}
+
+		private void OnEnable()
+		{
+			_inputs.Game.Enable();
+		}
+
+		private void OnDisable()
+		{
+			_inputs.Game.Disable();
 		}
 
 		// Update is called once per frame
@@ -50,7 +57,7 @@ namespace GA.GArkanoid
 			// Was the wall hazard? If so, destroy the ball!
 			if (wall.IsHazard)
 			{
-				Destroy(gameObject);
+				LevelManager.ResetBall();
 				GameManager.Lives--;
 				return;
 			}
@@ -59,11 +66,21 @@ namespace GA.GArkanoid
 			Bounce(normal);
 		}
 
+		#region Public interface
+
 		public void Bounce(Vector2 normal)
 		{
 			Vector2 u = Vector2.Dot(_velocity, normal) * normal;
 			Vector2 w = _velocity - u;
 			_velocity = w - u;
 		}
+
+		public void Stop()
+		{
+			// Stop ball's movement
+			_velocity = Vector2.zero;
+		}
+
+		#endregion Public interface
 	}
 }

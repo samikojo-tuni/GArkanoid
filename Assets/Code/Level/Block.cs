@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GA.GArkanoid
 {
-	public class Block : MonoBehaviour
+	public class Block : LevelObject
 	{
 		[SerializeField] private int _score = 1;
 
@@ -22,7 +22,7 @@ namespace GA.GArkanoid
 
 		private void Update()
 		{
-			if (CollisionCheck(GameManager.CurrentBall))
+			if (CollisionCheck(LevelManager.CurrentBall))
 			{
 				// There was a collision, destroy the block!
 				Break();
@@ -40,7 +40,7 @@ namespace GA.GArkanoid
 			}
 
 			// The ball hit this block! Let's bounce it
-			GameManager.CurrentBall.Bounce(hit.Normal);
+			LevelManager.CurrentBall.Bounce(hit.Normal);
 			return true;
 		}
 

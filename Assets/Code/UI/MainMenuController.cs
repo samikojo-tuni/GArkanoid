@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement; // Unity's scene management tools
 
 namespace GA.GArkanoid.UI
 {
@@ -15,6 +12,11 @@ namespace GA.GArkanoid.UI
 		public void Quit()
 		{
 			Application.Quit();
+		}
+
+		public void OpenOptions()
+		{
+			GameManager.ChangeState(State.StateType.Options);
 		}
 	}
 }

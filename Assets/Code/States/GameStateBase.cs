@@ -15,6 +15,11 @@ namespace GA.GArkanoid.State
 
 		private List<StateType> _targetStates = new List<StateType>();
 
+		protected GameStateBase()
+		{
+			// TODO: Do any initialization here
+		}
+
 		protected void AddTargetState(StateType targetState)
 		{
 			if (!_targetStates.Contains(targetState))

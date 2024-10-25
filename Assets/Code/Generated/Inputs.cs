@@ -46,6 +46,15 @@ namespace GA.GArkanoid
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""ba3230af-a3a9-4ded-8cff-0f5c84b1ec44"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -125,6 +134,17 @@ namespace GA.GArkanoid
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6effadc3-3dc6-4a2a-949f-787673a966d5"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -135,6 +155,7 @@ namespace GA.GArkanoid
             m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
             m_Game_Launch = m_Game.FindAction("Launch", throwIfNotFound: true);
             m_Game_Move = m_Game.FindAction("Move", throwIfNotFound: true);
+            m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -198,12 +219,14 @@ namespace GA.GArkanoid
         private List<IGameActions> m_GameActionsCallbackInterfaces = new List<IGameActions>();
         private readonly InputAction m_Game_Launch;
         private readonly InputAction m_Game_Move;
+        private readonly InputAction m_Game_Pause;
         public struct GameActions
         {
             private @Inputs m_Wrapper;
             public GameActions(@Inputs wrapper) { m_Wrapper = wrapper; }
             public InputAction @Launch => m_Wrapper.m_Game_Launch;
             public InputAction @Move => m_Wrapper.m_Game_Move;
+            public InputAction @Pause => m_Wrapper.m_Game_Pause;
             public InputActionMap Get() { return m_Wrapper.m_Game; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -219,6 +242,9 @@ namespace GA.GArkanoid
                 @Move.started += instance.OnMove;
                 @Move.performed += instance.OnMove;
                 @Move.canceled += instance.OnMove;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
 
             private void UnregisterCallbacks(IGameActions instance)
@@ -229,6 +255,9 @@ namespace GA.GArkanoid
                 @Move.started -= instance.OnMove;
                 @Move.performed -= instance.OnMove;
                 @Move.canceled -= instance.OnMove;
+                @Pause.started -= instance.OnPause;
+                @Pause.performed -= instance.OnPause;
+                @Pause.canceled -= instance.OnPause;
             }
 
             public void RemoveCallbacks(IGameActions instance)
@@ -250,6 +279,7 @@ namespace GA.GArkanoid
         {
             void OnLaunch(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
+            void OnPause(InputAction.CallbackContext context);
         }
     }
 }
