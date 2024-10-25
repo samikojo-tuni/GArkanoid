@@ -4,51 +4,51 @@ using UnityEngine;
 
 namespace GA.GArkanoid
 {
-    public class Block : MonoBehaviour
-    {
-        [SerializeField] private int _score = 1;
+	public class Block : MonoBehaviour
+	{
+		[SerializeField] private int _score = 1;
 
-        private SpriteRenderer _renderer;
+		private SpriteRenderer _renderer;
 
-        public int Score { get { return _score; } }
+		public int Score { get { return _score; } }
 
-        // TODO: Implement breaking blocks and adding score!
-        // TODO: Use Health for the block!
+		// TODO: Implement breaking blocks and adding score!
+		// TODO: Use Health for the block!
 
-        private void Awake()
-        {
-            _renderer = GetComponent<SpriteRenderer>();
-        }
+		private void Awake()
+		{
+			_renderer = GetComponent<SpriteRenderer>();
+		}
 
-        private void Update()
-        {
-            if (CollisionCheck(GameManager.CurrentBall))
-            {
-                // There was a collision, destroy the block!
-                Break();
-            }
-        }
+		private void Update()
+		{
+			if (CollisionCheck(GameManager.CurrentBall))
+			{
+				// There was a collision, destroy the block!
+				Break();
+			}
+		}
 
-        private bool CollisionCheck(Ball ball)
-        {
-            Bounds bounds = _renderer.bounds;
-            Physics.Hit hit = Physics.Intersects(bounds, ball.transform.position);
-            
-            if (hit == null)
-            {
-                return false;
-            }
+		private bool CollisionCheck(Ball ball)
+		{
+			Bounds bounds = _renderer.bounds;
+			Physics.Hit hit = Physics.Intersects(bounds, ball.transform.position);
 
-            // The ball hit this block! Let's bounce it
-            GameManager.CurrentBall.Bounce(hit.Normal);
-            return true;
-        }
+			if (hit == null)
+			{
+				return false;
+			}
 
-        public void Break()
-        {
-            // TODO: Destroying blocks may not be the best idea...
-            Destroy(gameObject);
-            GameManager.Score += _score;
-        }
-    }
+			// The ball hit this block! Let's bounce it
+			GameManager.CurrentBall.Bounce(hit.Normal);
+			return true;
+		}
+
+		public void Break()
+		{
+			// TODO: Destroying blocks may not be the best idea...
+			Destroy(gameObject);
+			GameManager.Score += _score;
+		}
+	}
 }
