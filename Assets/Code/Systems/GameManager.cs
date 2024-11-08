@@ -2,6 +2,7 @@ using GA.GArkanoid.State;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using GA.GArkanoid.Data;
 
 namespace GA.GArkanoid
 {
@@ -11,6 +12,14 @@ namespace GA.GArkanoid
 
 		public static event System.Action<StateType> EnteredState;
 		public static event System.Action<StateType> ExitedState;
+
+		// Stores level prefabs.
+		private static LevelData _levelData = null;
+
+		public static int LoadedLevelIndex
+		{
+			get; set;
+		}
 
 		// A static constructor is used to initialize any static data, 
 		// or to perform a particular action that needs to be performed once only.
@@ -114,6 +123,16 @@ namespace GA.GArkanoid
 			}
 
 			return true;
+		}
+
+		public static LevelManager GetLevelPrefab(int index)
+		{
+			if (_levelData == null)
+			{
+				_levelData = Resources.Load<LevelData>("LevelData");
+			}
+
+			return _levelData.GetLevelPrefab(index);
 		}
 	}
 }

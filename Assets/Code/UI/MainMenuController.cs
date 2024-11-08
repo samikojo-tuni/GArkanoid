@@ -76,6 +76,11 @@ namespace GA.GArkanoid.UI
 			}
 		}
 
+		public void SetLevelIndex(int index)
+		{
+			GameManager.LoadedLevelIndex = index;
+		}
+
 		public void StartNewGame()
 		{
 			GameManager.ChangeState(State.StateType.Level);
