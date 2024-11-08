@@ -9,6 +9,9 @@ namespace GA.GArkanoid
 	{
 		private static List<GameStateBase> _states = new List<GameStateBase>();
 
+		public static event System.Action<StateType> EnteredState;
+		public static event System.Action<StateType> ExitedState;
+
 		// A static constructor is used to initialize any static data, 
 		// or to perform a particular action that needs to be performed once only.
 		// It is called automatically before the first instance is created or any 
@@ -97,8 +100,18 @@ namespace GA.GArkanoid
 			PreviousState = CurrentState;
 
 			CurrentState.OnExit();
+			if (ExitedState != null)
+			{
+				ExitedState(CurrentState.Type);
+			}
+			
 			CurrentState = targetState;
+
 			CurrentState.OnEnter(forceLoad);
+			if (EnteredState != null)
+			{
+				EnteredState(CurrentState.Type);
+			}
 
 			return true;
 		}
