@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using GA.GArkanoid.Data;
+using GA.GArkanoid.Persistance;
 
 namespace GA.GArkanoid
 {
@@ -21,6 +22,8 @@ namespace GA.GArkanoid
 			get; set;
 		}
 
+		public static SaveSystem SaveSystem { get; private set; }
+
 		// A static constructor is used to initialize any static data, 
 		// or to perform a particular action that needs to be performed once only.
 		// It is called automatically before the first instance is created or any 
@@ -29,9 +32,11 @@ namespace GA.GArkanoid
 		{
 			Lives = 3;
 			Score = 0;
-			CurrentLevel = 1;
+			LoadedLevelIndex = 0;
 
 			InitializeStates();
+
+			SaveSystem = new SaveSystem();
 		}
 
 		private static void InitializeStates()
@@ -65,7 +70,6 @@ namespace GA.GArkanoid
 
 		public static int Score { get; set; }
 		public static int Lives { get; set; }
-		public static int CurrentLevel { get; private set; }
 
 		public static GameStateBase CurrentState { get; private set; }
 		public static GameStateBase PreviousState { get; private set; }
@@ -113,7 +117,7 @@ namespace GA.GArkanoid
 			{
 				ExitedState(CurrentState.Type);
 			}
-			
+
 			CurrentState = targetState;
 
 			CurrentState.OnEnter(forceLoad);
@@ -133,6 +137,23 @@ namespace GA.GArkanoid
 			}
 
 			return _levelData.GetLevelPrefab(index);
+		}
+
+		public static void Save(BinarySaver writer)
+		{
+			writer.WriteInt32(LoadedLevelIndex);
+			writer.WriteInt32(Lives);
+			writer.WriteInt32(Score);
+		}
+
+		public static void Load(BinarySaver reader)
+		{
+			LoadedLevelIndex = reader.ReadInt32();
+			Lives = reader.ReadInt32();
+			Score = reader.ReadInt32();
+
+			// TODO: This could be done much more robust way!
+			// Let's fix this in the early spring!
 		}
 	}
 }

@@ -55,6 +55,24 @@ namespace GA.GArkanoid
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSave"",
+                    ""type"": ""Button"",
+                    ""id"": ""8a137c22-e450-4dc3-abd1-e331477f25cc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickLoad"",
+                    ""type"": ""Button"",
+                    ""id"": ""3d92a483-0c80-4f6b-a73d-084ff4dde300"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -143,6 +161,28 @@ namespace GA.GArkanoid
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f036bcef-22d1-4885-91ee-e53b6b1d8c8f"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSave"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5df80107-1bca-4494-8d19-26c9cfa8cd13"",
+                    ""path"": ""<Keyboard>/f6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickLoad"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -672,6 +712,8 @@ namespace GA.GArkanoid
             m_Game_Launch = m_Game.FindAction("Launch", throwIfNotFound: true);
             m_Game_Move = m_Game.FindAction("Move", throwIfNotFound: true);
             m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
+            m_Game_QuickSave = m_Game.FindAction("QuickSave", throwIfNotFound: true);
+            m_Game_QuickLoad = m_Game.FindAction("QuickLoad", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -748,6 +790,8 @@ namespace GA.GArkanoid
         private readonly InputAction m_Game_Launch;
         private readonly InputAction m_Game_Move;
         private readonly InputAction m_Game_Pause;
+        private readonly InputAction m_Game_QuickSave;
+        private readonly InputAction m_Game_QuickLoad;
         public struct GameActions
         {
             private @Inputs m_Wrapper;
@@ -755,6 +799,8 @@ namespace GA.GArkanoid
             public InputAction @Launch => m_Wrapper.m_Game_Launch;
             public InputAction @Move => m_Wrapper.m_Game_Move;
             public InputAction @Pause => m_Wrapper.m_Game_Pause;
+            public InputAction @QuickSave => m_Wrapper.m_Game_QuickSave;
+            public InputAction @QuickLoad => m_Wrapper.m_Game_QuickLoad;
             public InputActionMap Get() { return m_Wrapper.m_Game; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -773,6 +819,12 @@ namespace GA.GArkanoid
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @QuickSave.started += instance.OnQuickSave;
+                @QuickSave.performed += instance.OnQuickSave;
+                @QuickSave.canceled += instance.OnQuickSave;
+                @QuickLoad.started += instance.OnQuickLoad;
+                @QuickLoad.performed += instance.OnQuickLoad;
+                @QuickLoad.canceled += instance.OnQuickLoad;
             }
 
             private void UnregisterCallbacks(IGameActions instance)
@@ -786,6 +838,12 @@ namespace GA.GArkanoid
                 @Pause.started -= instance.OnPause;
                 @Pause.performed -= instance.OnPause;
                 @Pause.canceled -= instance.OnPause;
+                @QuickSave.started -= instance.OnQuickSave;
+                @QuickSave.performed -= instance.OnQuickSave;
+                @QuickSave.canceled -= instance.OnQuickSave;
+                @QuickLoad.started -= instance.OnQuickLoad;
+                @QuickLoad.performed -= instance.OnQuickLoad;
+                @QuickLoad.canceled -= instance.OnQuickLoad;
             }
 
             public void RemoveCallbacks(IGameActions instance)
@@ -926,6 +984,8 @@ namespace GA.GArkanoid
             void OnLaunch(InputAction.CallbackContext context);
             void OnMove(InputAction.CallbackContext context);
             void OnPause(InputAction.CallbackContext context);
+            void OnQuickSave(InputAction.CallbackContext context);
+            void OnQuickLoad(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {

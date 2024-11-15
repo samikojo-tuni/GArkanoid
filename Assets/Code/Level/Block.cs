@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using GA.GArkanoid.Error;
+using GA.GArkanoid.Persistance;
 using UnityEngine;
 
 namespace GA.GArkanoid
@@ -46,9 +48,20 @@ namespace GA.GArkanoid
 
 		public void Break()
 		{
-			// TODO: Destroying blocks may not be the best idea...
-			Destroy(gameObject);
+			gameObject.SetActive(false);
 			GameManager.Score += _score;
+		}
+
+		public override void Save(BinarySaver writer)
+		{
+			writer.WriteString(ID);
+			writer.WriteBool(gameObject.activeSelf);
+		}
+
+		public override void Load(BinarySaver reader)
+		{
+			bool isActive = reader.ReadBool();
+			gameObject.SetActive(isActive);
 		}
 	}
 }

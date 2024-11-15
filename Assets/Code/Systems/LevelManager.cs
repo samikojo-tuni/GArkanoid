@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GA.GArkanoid.Error;
+using GA.GArkanoid.Persistance;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +10,9 @@ namespace GA.GArkanoid
 {
 	public class LevelManager : MonoBehaviour
 	{
+		public static LevelManager Current;
+		public static event System.Action<LevelManager> LevelInitialized;
+
 		private Inputs _inputs;
 
 		public Ball CurrentBall { get; private set; }
@@ -18,6 +23,7 @@ namespace GA.GArkanoid
 		private void Awake()
 		{
 			_inputs = new Inputs();
+			Current = this;
 
 			if (CurrentBall == null)
 			{
@@ -44,11 +50,15 @@ namespace GA.GArkanoid
 		{
 			_inputs.Game.Enable();
 			_inputs.Game.Pause.performed += OnPausePerformed;
+			_inputs.Game.QuickSave.performed += OnQuickSavePerformed;
+			_inputs.Game.QuickLoad.performed += OnQuickLoadPerformed;
 		}
 
 		private void OnDisable()
 		{
 			_inputs.Game.Pause.performed -= OnPausePerformed;
+			_inputs.Game.QuickSave.performed -= OnQuickSavePerformed;
+			_inputs.Game.QuickLoad.performed -= OnQuickLoadPerformed;
 			_inputs.Game.Disable();
 		}
 
@@ -66,6 +76,34 @@ namespace GA.GArkanoid
 			{
 				wall.Setup(this);
 			}
+
+			if (LevelInitialized != null)
+			{
+				LevelInitialized(this);
+			}
+		}
+
+#if UNITY_EDITOR
+		[ContextMenu("Reset IDs")]
+		private void ResetIDs()
+		{
+			LevelObject[] saveables = GetComponentsInChildren<LevelObject>(includeInactive: true);
+			foreach (LevelObject saveable in saveables)
+			{
+				saveable.ResetID();
+			}
+		}
+#endif
+
+		private void OnQuickLoadPerformed(InputAction.CallbackContext context)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void OnQuickSavePerformed(InputAction.CallbackContext context)
+		{
+			string quickSaveSlot = SaveSystem.QuickSaveSlot;
+			GameManager.SaveSystem.Save(quickSaveSlot);
 		}
 
 		private void OnPausePerformed(InputAction.CallbackContext context)
@@ -77,6 +115,50 @@ namespace GA.GArkanoid
 		{
 			CurrentBall.Stop();
 			CurrentPaddle.ResetBall();
+		}
+
+		public void Save(BinarySaver writer)
+		{
+			CurrentBall.Save(writer);
+			CurrentPaddle.Save(writer);
+
+			// Save the number of blocks so we know how many blocks
+			// should be loaded.
+			writer.WriteInt32(Blocks.Length);
+			foreach (Block block in Blocks)
+			{
+				block.Save(writer);
+			}
+		}
+
+		public void Load(BinarySaver reader)
+		{
+			CurrentBall.Load(reader);
+			CurrentPaddle.Load(reader);
+
+			int blockCount = reader.ReadInt32();
+			for (int i = 0; i < blockCount; ++i)
+			{
+				bool blockFound = false;
+				string blockId = reader.ReadString();
+
+				for (int j = 0; j < Blocks.Length; ++j)
+				{
+					Block block = Blocks[j];
+					if (block.ID == blockId)
+					{
+						block.Load(reader);
+						blockFound = true;
+						// Exits the inner for-loop.
+						break;
+					}
+				}
+
+				if (!blockFound)
+				{
+					throw new LoadException("A block is missing from the level!");
+				}
+			}
 		}
 	}
 }

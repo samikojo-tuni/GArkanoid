@@ -1,4 +1,5 @@
 using System;
+using GA.GArkanoid.Persistance;
 using GA.GArkanoid.State;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -94,6 +95,11 @@ namespace GA.GArkanoid.UI
 		public void OpenOptions()
 		{
 			GameManager.ChangeState(State.StateType.Options);
+		}
+
+		public void QuickLoad()
+		{
+			GameManager.SaveSystem.Load(SaveSystem.QuickSaveSlot);
 		}
 	}
 }

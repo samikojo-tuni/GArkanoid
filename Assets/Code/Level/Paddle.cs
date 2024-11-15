@@ -1,4 +1,6 @@
 using System;
+using GA.GArkanoid.Error;
+using GA.GArkanoid.Persistance;
 using UnityEngine;
 
 namespace GA.GArkanoid
@@ -47,6 +49,25 @@ namespace GA.GArkanoid
 			base.Setup(levelManager);
 
 			ResetBall();
+		}
+
+		public override void Save(BinarySaver writer)
+		{
+			writer.WriteString(ID);
+			writer.WriteVector3(transform.position);
+		}
+
+		public override void Load(BinarySaver reader)
+		{
+			string id = reader.ReadString();
+			if (ID != id)
+			{
+				// Something went wrong! The ID's don't match.
+				// Throwing an exception ends this method.
+				throw new LoadException("Corrupted save file!");
+			}
+
+			transform.position = reader.ReadVector3();
 		}
 	}
 }

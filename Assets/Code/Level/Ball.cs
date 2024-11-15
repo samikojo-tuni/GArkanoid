@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using GA.GArkanoid.Error;
+using GA.GArkanoid.Persistance;
 using UnityEngine;
 
 namespace GA.GArkanoid
@@ -79,6 +82,34 @@ namespace GA.GArkanoid
 		{
 			// Stop ball's movement
 			_velocity = Vector2.zero;
+		}
+
+		public override void Save(BinarySaver writer)
+		{
+			writer.WriteString(ID);
+			writer.WriteVector3(transform.position);
+			writer.WriteVector2(_velocity);
+		}
+
+		public override void Load(BinarySaver reader)
+		{
+			string ballId = reader.ReadString();
+			if (ID != ballId)
+			{
+				// Something went wrong! The ID's don't match.
+				// Throwing an exception ends this method.
+				throw new LoadException("Corrupted save file!");
+			}
+
+			Vector3 position = reader.ReadVector3();
+			_velocity = reader.ReadVector2();
+
+			if (_velocity != Vector2.zero)
+			{
+				transform.parent = null;
+			}
+
+			transform.position = position;
 		}
 
 		#endregion Public interface
