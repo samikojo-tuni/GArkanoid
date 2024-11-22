@@ -16,6 +16,7 @@ namespace GA.GArkanoid
 
 		// Stores level prefabs.
 		private static LevelData _levelData = null;
+		private static AudioData _audioData = null;
 
 		public static int LoadedLevelIndex
 		{
@@ -137,6 +138,17 @@ namespace GA.GArkanoid
 			}
 
 			return _levelData.GetLevelPrefab(index);
+		}
+
+		public static AudioClip GetAudioClip(AudioType type)
+		{
+			// Lazy load audio data, load it when it is first needed.
+			if (_audioData == null)
+			{
+				_audioData = Resources.Load<AudioData>("AudioData");
+			}
+
+			return _audioData.GetClip(type);
 		}
 
 		public static void Save(BinarySaver writer)

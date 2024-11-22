@@ -13,11 +13,13 @@ namespace GA.GArkanoid
 		private Inputs _inputs;
 		private Transform _transform;
 		private Vector2 _velocity = Vector2.zero;
+		private AudioSource _audioSource;
 
 		private void Awake()
 		{
 			_inputs = new Inputs();
 			_transform = transform;
+			_audioSource = GetComponent<AudioSource>();
 		}
 
 		private void OnEnable()
@@ -57,12 +59,20 @@ namespace GA.GArkanoid
 				return;
 			}
 
+			AudioClip clip = null;
 			// Was the wall hazard? If so, destroy the ball!
 			if (wall.IsHazard)
 			{
 				LevelManager.ResetBall();
 				GameManager.Lives--;
+				clip = GameManager.GetAudioClip(AudioType.Destroy);
+				_audioSource.PlayOneShot(clip);
 				return;
+			}
+			else
+			{
+				clip = GameManager.GetAudioClip(AudioType.Hit);
+				_audioSource.PlayOneShot(clip);
 			}
 
 			Vector2 normal = wall.Normal;
